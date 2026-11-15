@@ -2,17 +2,15 @@
 
 A test of whether a small, deliberately mixed group of earlier viewers predicts where the next viewer of a 360° video will look better than a random group of the same size.
 
-<!-- MYO: write 2–4 sentences on why you cared -->
+## Why I cared
+
+I want to build my own AR glasses one day. Glasses have little battery and bandwidth to spare, so a 360° video has to be streamed by sending only the part you are about to look at, usually guessed from where earlier viewers looked. A new or live video has only a few earlier viewers. I wanted to know whether it matters whose eyes those are.
 
 ## What I found
 
 It does not. A group of 4 viewers mixed by viewing style did no better than 4 random viewers, and 16 random viewers beat every group of 4 I could choose. The one choice that helped a little was the opposite of variety: picking the most typical viewers.
 
 ![Chosen groups against random groups](results/chosen_vs_random.png)
-
-## Background
-
-A headset shows a window about 100 degrees wide out of the whole sphere. A streaming system cuts the picture into tiles and sends in high quality only the tiles it expects you to look at, often by copying earlier viewers. A new or live video has only a few earlier viewers, so I asked whether it matters who they are.
 
 ## The two explanations
 
@@ -28,7 +26,7 @@ Quantity held. Composition matters a little when the group is very small, and th
 - **Held-out videos.** Each video is the test video in turn. A viewer's style is measured on the other 17 videos only.
 - **Trials.** In each of 200 trials per video, 16 viewers are set aside as test viewers and groups are picked from the other 32.
 - **Three ways to pick a group.** Random. Mixed: cluster the pool by style and take one viewer from each cluster. Typical: the viewers who stay closest to the crowd, added as a control.
-- **Score.** Coverage is the share of a test viewer's window that lands on high-quality tiles. I report the average viewer and the worst-served 10% of viewers.
+- **Score.** Coverage is the share of a test viewer's window (about 100 degrees wide) that lands on high-quality tiles. I report the average viewer and the worst-served 10% of viewers.
 - **Uncertainty.** Every interval is a 95% bootstrap over the 18 videos, on differences paired by video.
 
 Coverage in percent, and differences in points with intervals:
@@ -42,7 +40,7 @@ Coverage in percent, and differences in points with intervals:
 
 For the worst-served 10%, the mixed group scores -0.3 points against 4 random viewers (-0.5 to -0.0) and the typical group +0.6 (+0.1 to +1.1). Read off the random curve, 4 mixed viewers are worth 3.8 random viewers and 4 typical viewers are worth 6.4. The full tables are in [chosen_vs_random.md](results/chosen_vs_random.md) and [four_vs_sixteen.md](results/four_vs_sixteen.md).
 
-It helps to know how much a crowd is worth at all ([baselines](results/baselines.md)). Assuming the viewer keeps looking where they look now covers 86.8% of the window 1 second ahead and 74.9% at 5 seconds. A random crowd covers 66.9% with 1 viewer and 77.4% with 32. So a crowd only beats the viewer's own motion at 5 seconds, and blending the two reaches 79.8% there. With that blend, every difference between groups is under one point. The crowd question only matters for long look-ahead.
+How much is any crowd worth ([baselines](results/baselines.md))? Assuming the viewer keeps looking where they look now covers 86.8% of the window 1 second ahead and 74.9% at 5 seconds. A random crowd covers 66.9% with 1 viewer and 77.4% with 32. So a crowd only beats the viewer's own motion at 5 seconds, and blending the two reaches 79.8% there. With that blend, every difference between groups is under one point. The crowd question only matters for long look-ahead.
 
 ## Demo
 
@@ -71,7 +69,7 @@ The rest is in [CHANGELOG.md](CHANGELOG.md). Catching my own mistakes with small
 
 ## What I would do next
 
-Test the typical-viewer result where it would be used: a live broadcast in which a few viewers watch slightly ahead of everyone else. The related work is in [docs/related_work.md](docs/related_work.md). I would rather try that on a larger dataset first, because 48 people is thin for a claim about people.
+Test the typical-viewer result where it would be used: a live broadcast in which a few viewers watch slightly ahead of everyone else. The related work is in [docs/related_work.md](docs/related_work.md). I would try it on a larger dataset first: 48 people is thin for a claim about people.
 
 ## Run it
 
@@ -90,4 +88,4 @@ python -m pytest -q
 
 A shorter run with fewer trials is in the [Colab notebook](https://colab.research.google.com/github/FireCloud24/vr-whose-eyes/blob/main/notebooks/vr_whose_eyes.ipynb). The demo also needs one video file and ffmpeg ([script](scripts/demo.py)).
 
-Data: Wu, Tan, Wang and Yang, "A Dataset for Exploring User Behaviors in VR Spherical Video Streaming", MMSys 2017, from the authors' [page](https://wuchlei-thu.github.io). The data is downloaded by the script and is not in this repo.
+Data: Wu, Tan, Wang and Yang, "A Dataset for Exploring User Behaviors in VR Spherical Video Streaming", MMSys 2017, from the authors' [page](https://wuchlei-thu.github.io). The script downloads the data; only the short demo clip is in this repo.

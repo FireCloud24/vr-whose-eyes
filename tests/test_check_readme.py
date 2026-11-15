@@ -46,7 +46,8 @@ def test_the_real_readme_is_fully_traced_and_follows_the_style_rules():
         assert not re.search(rf"\b{word}", prose, flags=re.I), word
     for phrase in ("Short answer", "Skills shown", "Definition of done", "RQ1"):
         assert phrase not in readme
-    assert "<!-- MYO: write 2–4 sentences on why you cared -->" in readme
+    why = re.search(r"## Why I cared\n\n(.+?)\n\n## ", readme, flags=re.S)  # written, 2 to 4 sentences
+    assert why and 2 <= len(re.findall(r"[.!?](?:\s|$)", why.group(1))) <= 4
     assert not re.search(r"\bnot\b[^.]{0,60}, but\b", prose)          # no "not X, but Y"
     assert "results/demo.gif" in readme and "results/chosen_vs_random.png" in readme
 
