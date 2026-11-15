@@ -1,0 +1,9 @@
+# Data is never committed. scripts/download.py fetches it.
+data/
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.ipynb_checkpoints/
+.DS_Store
