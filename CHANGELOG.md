@@ -64,3 +64,34 @@ Parsing, tiles, field of view and heatmaps.
 - The two experiments differ a lot. In experiment 2 the 16 most-watched tiles take
   82% of all viewing on average, against 61% in experiment 1, and heads move about
   half as fast. So experiment 2 is the easy case for any crowd method.
+
+Baselines: own motion, random crowds and a blend.
+
+- Set-up choices, made before looking at chosen groups:
+  - The stream is cut into one-second segments. A horizon of h seconds means the
+    tiles for a segment are picked h seconds before it starts.
+  - Budget: 16 of 72 tiles. Rule: the smallest budget at which perfect foresight
+    covers at least 95% of the window (`results/budget.md`).
+  - Each trial splits the 48 viewers into 16 test viewers and a pool of 32. Groups
+    come from the pool only. The first version of my design scored "everyone not
+    in the group", but then a method that puts unusual viewers in the group would
+    also remove them from the test set and look better for free.
+  - "Own motion" means "assume the viewer keeps looking where they look now". I did
+    not add velocity extrapolation. The TRACK paper found the plain version hard to
+    beat, and my question is about the crowd.
+  - A crowd's score does not depend on the horizon, because earlier viewers' whole
+    traces are known. Only own motion and the blend change with the horizon.
+  - Blend weight: picked per group size and horizon on the other 17 videos, with
+    separate random splits from the evaluation.
+- Results (`results/baselines.md`, `results/crowd_curve.png`):
+  - Own motion covers 86.8% at 1 second, 81.9% at 2 and 74.9% at 5.
+  - A random crowd covers 66.9% with one viewer and 77.4% with 32. Most of the gain
+    is in by 8 viewers (75.8%).
+  - So a crowd alone only beats own motion at 5 seconds, and only from about 8
+    viewers up. At 1 second the blend adds half a point at best. At 5 seconds the
+    blend with 32 viewers adds about 5 points over own motion.
+  - Intervals over videos are wide for the crowd (about 6 points each way), because
+    videos differ so much. Comparisons between arms will be paired by video.
+- Speed: the first version of tile picking spent most of its time rolling arrays to
+  find neighbours. A fixed 72 x 72 neighbour matrix made a trial about 2.6 times
+  faster, and videos now run in parallel processes with their own seeds.
