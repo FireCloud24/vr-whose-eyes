@@ -177,3 +177,13 @@ Demo clip, and a correction to how the frame is drawn.
   the demo rescales frames to 2:1 before cutting out the window.
 - The first GIF was 11 MB. Keeping five frames a second and 64 colours brought it
   to 4.9 MB.
+
+README and notebook.
+
+- `scripts/check_readme.py` pulls every number out of the README and looks for it in
+  the generated notes under `results/`. The list is in `results/readme_numbers.md`.
+  Three numbers are settings or facts and are listed as such in the script: 2017,
+  360 and 100. A test runs the same check and the README's style rules.
+- The first draft of the README was 1,243 words. I cut it to under 1,200.
+- The notebook in `notebooks/` runs the pipeline with 20 trials per video and writes
+  to `results_quick/`, so it never overwrites the files the README cites.
