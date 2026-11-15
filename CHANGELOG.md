@@ -134,3 +134,21 @@ Viewing styles, and chosen groups against random groups.
   main action.
 - Runtime: the main run took about 45 minutes on nine processes. The longest
   video (11 minutes) sets the pace because videos run one per process.
+
+Four chosen viewers against sixteen random ones.
+
+- `scripts/four_vs_sixteen.py` reads the per-video table from the previous step, so
+  the comparison is paired on the same splits and test viewers.
+- Result (`results/four_vs_sixteen.md`): sixteen random viewers beat four chosen
+  ones in every version. Crowd only, four mixed viewers are 3.4 points below
+  sixteen random (-4.0 to -2.8) and lose in all 18 videos. Four typical viewers
+  are 1.8 points below (-2.3 to -1.3). With the blend at 2 seconds the gaps are
+  about half a point, still in favour of sixteen.
+- Read off the random curve, four mixed viewers are worth 3.8 random viewers and
+  four typical viewers are worth 6.4.
+- So the answer to the project's question is no on both counts. Quantity explains
+  most of what a crowd gives. Who is in the crowd matters a little when the crowd
+  is very small, and then it pays to pick conformists.
+- The verdict words in the table come from the intervals. I wrote the three
+  possible sentences into the code before the result existed and let the numbers
+  pick one.
