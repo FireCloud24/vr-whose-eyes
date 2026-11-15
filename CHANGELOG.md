@@ -152,3 +152,28 @@ Four chosen viewers against sixteen random ones.
 - The verdict words in the table come from the intervals. I wrote the three
   possible sentences into the code before the result existed and let the numbers
   pick one.
+
+Demo clip, and a correction to how the frame is drawn.
+
+- Which way round the picture runs. I had read the paper's "wrapped anti-clockwise"
+  one way and noted that I could not be sure without video frames. For the demo I
+  downloaded one video and drew every viewer's view centre on a real frame under
+  both readings (`results/frame_orientation.jpg`). My first reading puts the gaze
+  cluster on empty backdrop. The mirrored reading puts it on the performer. So the
+  picture is mirrored relative to the angle I use in the code.
+- What this changes: only drawings. The heatmaps in `results/heatmaps/` were
+  redrawn so that left and right match the real video. No coverage number moves,
+  because a mirrored tile grid is the same grid, and there is a test for that.
+- The demo (`results/demo.gif`, `results/demo.md`) shows one viewer's real head
+  motion over ten seconds of the first video, twice: with the 16 tiles picked from
+  4 viewers mixed by style, and from 16 random viewers. Both groups are the ones
+  that trial used in the results. Tiles outside the 16 are drawn blocky.
+- How I picked the clip, so nobody takes it for evidence: I used the one video I
+  had downloaded, took the viewer whose gap between the two groups over the whole
+  video was closest to that video's average gap, and then the ten seconds where
+  that viewer's gap was largest. In the clip the two groups cover 59% and 90% of
+  the window. Over the whole video they cover 75% and 80% for this viewer.
+- The dataset's video files are 16:9 although the content is a full sphere, so
+  the demo rescales frames to 2:1 before cutting out the window.
+- The first GIF was 11 MB. Keeping five frames a second and 64 colours brought it
+  to 4.9 MB.

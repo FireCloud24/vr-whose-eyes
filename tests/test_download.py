@@ -74,3 +74,30 @@ def test_extract_keeps_layout_and_ignores_everything_else(tmp_path):
     assert (out / "Formated_Data" / "Experiment_2" / "12" / "video_3.csv").read_text() == "Timestamp\n"
     assert not (tmp_path / "escape").exists() and not (tmp_path / "escape2").exists()
     assert sorted(p.name for p in (out / "Formated_Data").iterdir()) == ["Experiment_1", "Experiment_2", "userDemo.csv"]
+
+
+def test_video_links_come_from_the_metadata_with_the_known_correction(tmp_path):
+    from scripts import download_video
+    from tests.conftest import make_dataset
+
+    root = make_dataset(tmp_path / "Formated_Data", viewers=(1,), seconds=0.2)
+    meta = root / "Experiment_1" / "videoMeta.csv"
+    meta.write_text(meta.read_text().replace("https://example.org,https://example.org", "https://example.org,https://example.org/clip.mp4?dl=0", 1))
+    assert download_video.video_url(root, "1-1") == "https://example.org/clip.mp4?dl=1"
+    assert download_video.video_url(root, "1-2") == "https://example.org?dl=1"
+    assert "2-9-HeyVR" in download_video.video_url(root, "2-9")
+
+
+def test_fetch_video_downloads_once_and_records_what_it_got(tmp_path):
+    from scripts import download_video
+    from tests.conftest import make_dataset
+
+    root = make_dataset(tmp_path / "Formated_Data", viewers=(1,), seconds=0.2)
+    calls, payload = [], b"not really a video"
+    out = tmp_path / "videos"
+    path = download_video.fetch_video(root, "1-3", out, opener_for(payload, calls))
+    assert path.name == "1-3.mp4" and path.read_bytes() == payload
+    entry = download.load_manifest(out)["files"]["1-3.mp4"]
+    assert entry["bytes"] == len(payload) and entry["sha256"] == hashlib.sha256(payload).hexdigest()
+    download_video.fetch_video(root, "1-3", out, opener_for(payload, calls))
+    assert len(calls) == 1

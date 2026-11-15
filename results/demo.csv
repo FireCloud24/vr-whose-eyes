@@ -1,0 +1,2 @@
+video,viewer,start_s,seconds,budget,trial,seed,group_mixed_4,group_random_16,clip_coverage_mixed_4,clip_coverage_random_16,video_coverage_mixed_4,video_coverage_random_16
+1-1,33,64,10,16,2,0,12 15 25 43,2 3 4 12 14 16 18 22 25 34 37 39 40 41 43 44,0.5936,0.8991,0.751,0.7993

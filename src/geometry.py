@@ -10,10 +10,12 @@ round from there. So for a direction (x, y, z):
     across the frame   u = atan2(z, x) / 360 degrees, wrapped into [0, 1)
     down the frame     v = (90 - latitude) / 180, with latitude = asin(y)
 
-The middle of the frame (u = 0.5) is the -x direction. Whether the frame runs
-left-to-right or right-to-left around the viewer is not pinned down by the paper.
-Coverage numbers do not depend on it, because a mirrored tile grid is the same
-grid. It only matters when drawing over real video frames.
+The middle of the frame (u = 0.5) is the -x direction. The paper does not pin
+down whether the picture runs left-to-right or right-to-left around the viewer.
+I checked against real video frames (results/frame_orientation.jpg): the picture
+runs the other way from u, so a point at u sits at 1 - u across the picture.
+PICTURE_MIRRORED records that. Coverage numbers do not depend on it, because a
+mirrored tile grid is the same grid. It only matters when drawing.
 
 Tiles split the frame into `rows` x `cols` equal rectangles, numbered row by row
 from the top-left. A viewport is what the headset shows: a square window `fov`
@@ -25,6 +27,7 @@ from __future__ import annotations
 import numpy as np
 
 ROWS, COLS = 6, 12
+PICTURE_MIRRORED = True  # picture x = 1 - u; see the note above
 FOV_DEG = 100.0
 RAYS_PER_SIDE = 20  # even, so no ray sits exactly on the window's centre lines
 

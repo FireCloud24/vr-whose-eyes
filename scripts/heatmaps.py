@@ -31,12 +31,14 @@ FINE_EVERY = 10                # one tick a second is plenty for the drawing gri
 
 
 def on_screen_share(q: np.ndarray) -> np.ndarray:
-    """(viewers, ticks, 4) -> (FINE_ROWS, FINE_COLS): share of viewer-time each cell is on screen."""
+    """(viewers, ticks, 4) -> (FINE_ROWS, FINE_COLS): share of viewer-time each cell is on screen.
+    Columns run left to right as in the real video frame."""
     # 40 rays a side, so every 5 degree cell inside the window is hit by a few rays.
     w = geometry.tile_weights(q[:, ::FINE_EVERY], FINE_ROWS, FINE_COLS, n=40, chunk=1000)
     flat = w.reshape(-1, FINE_ROWS, FINE_COLS)
     present = ~np.isnan(flat[:, 0, 0])
-    return (flat[present] > 0).mean(axis=0)
+    grid = (flat[present] > 0).mean(axis=0)
+    return grid[:, ::-1] if geometry.PICTURE_MIRRORED else grid  # drawn the way the video frame runs
 
 
 def tile_concentration(weights: np.ndarray, top: int = 16) -> float:
@@ -124,7 +126,7 @@ def main(argv=None) -> int:
     for video, grid in grids.items():
         fig, ax = plt.subplots(figsize=(5, 2.9))
         im = draw(ax, grid, f"{video}  {meta.loc[video, 'Content']}", vmax)
-        ax.set_xlabel("across the frame (degrees)", fontsize=7)
+        ax.set_xlabel("across the video frame, left to right (degrees)", fontsize=7)
         ax.set_ylabel("latitude", fontsize=7)
         fig.colorbar(im, ax=ax, fraction=0.025, pad=0.02).ax.tick_params(labelsize=6)
         fig.tight_layout()

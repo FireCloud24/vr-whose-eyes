@@ -26,6 +26,11 @@ def test_on_screen_share_averages_over_viewers_and_skips_missing_samples():
     assert np.isclose(grid[18, 36], 2 / 3) and np.isclose(grid[18, 0], 1 / 3)  # 4 present ticks vs 2 after thinning
 
 
+def test_heatmap_columns_run_the_way_the_video_frame_does():
+    grid = heatmaps.on_screen_share(looking(-90 + 60))  # 60 degrees towards lower u, which is the right of the picture
+    assert grid[18, 36 + 12] == 1.0 and grid[18, 36 - 20] == 0.0
+
+
 def test_tile_concentration():
     same_place = geometry.tile_weights(looking(-90))
     assert np.isclose(heatmaps.tile_concentration(same_place), 1.0, atol=1e-5)
