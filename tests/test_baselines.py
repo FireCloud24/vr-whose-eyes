@@ -1,5 +1,4 @@
 """The baselines script: budget rule, blend-weight tuning and outputs."""
-import numpy as np
 import pandas as pd
 
 from scripts import baselines

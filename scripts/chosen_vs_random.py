@@ -41,7 +41,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src import data, evaluate, metrics, parse, predict, styles
+from src import data, evaluate, parse, styles
 
 STABLE_ENOUGH = 0.3  # split-half correlation below this means "not a trait"
 ARMS = ("random", "mixed", "typical")
@@ -144,10 +144,18 @@ def fmt_diff(row, scale: float = 100, digits: int = 1) -> str:
             f"{row['videos_above_zero']}/{row['videos']}")
 
 
+def whole_pool(diff: pd.DataFrame) -> set[int]:
+    """Group sizes at which the group is the whole pool: every arm picks the same viewers, so every
+    difference and interval is exactly zero. These rows say nothing and are left out."""
+    zero = (diff[["difference", "lo", "hi"]] == 0).all(axis=1)
+    return {int(k) for k, all_zero in zero.groupby(diff["k"]).all().items() if all_zero}
+
+
 def diff_table(diff: pd.DataFrame, method: str, ks) -> list[str]:
     d = diff[diff["method"] == method].set_index(["arm", "k", "metric"])
     lines = ["| k | Arm | Coverage, average viewer | Coverage, worst 10% | Poor seconds per minute, worst 10% |", "|---|---|---|---|---|"]
-    for k in ks:
+    skip = whole_pool(diff)
+    for k in [k for k in ks if k not in skip]:
         for arm in ARMS[1:]:
             if (arm, k, "coverage") not in d.index:
                 continue
@@ -183,8 +191,8 @@ def render(summary: pd.DataFrame, diff: pd.DataFrame, diff_same: pd.DataFrame, a
         "",
         "Each cell is the mean difference over videos, its 95% bootstrap interval over videos, and the",
         "number of videos in which the arm beat random. Coverage is in percentage points, where above",
-        "zero is better. Poor seconds are per minute, where below zero is better. At k = 32 the group is",
-        "the whole pool, so every arm is the same and the row is left out.",
+        "zero is better. Poor seconds are per minute, where below zero is better. When k is the whole",
+        "pool (32), every arm picks the same viewers, so that row is left out.",
         "",
         "### Crowd only",
         "",
@@ -224,14 +232,14 @@ def figure(summary: pd.DataFrame, diff: pd.DataFrame, path: Path, args):
         ax = axes[1, col]
         ax.axhline(0, color="black", lw=0.8)
         for offset, arm in ((-0.04, "mixed"), (0.04, "typical")):
-            kk = [k for k in ks if (arm, k, metric) in d.index]
+            kk = [k for k in ks if (arm, k, metric) in d.index and k not in whole_pool(diff)]
             mean = np.array([100 * d.loc[(arm, k, metric), "difference"] for k in kk])
             lo = np.array([100 * d.loc[(arm, k, metric), "lo"] for k in kk])
             hi = np.array([100 * d.loc[(arm, k, metric), "hi"] for k in kk])
             x = np.array(kk) * 2 ** offset
             ax.errorbar(x, mean, yerr=[mean - lo, hi - mean], fmt="o", color=ARM_COLOUR[arm], capsize=3, ms=4, label=f"{arm} minus random")
         ax.set_ylabel("difference from random (points)")
-        ax.set_title(f"Difference from a random group of the same size, {who}", fontsize=9)
+        ax.set_title(f"Chosen minus random of the same size, {who}", fontsize=9)
     for ax in axes.ravel():
         ax.set_xscale("log", base=2)
         ax.set_xticks(ks)
@@ -239,8 +247,8 @@ def figure(summary: pd.DataFrame, diff: pd.DataFrame, path: Path, args):
         ax.set_xlabel("earlier viewers in the group (k)")
         ax.grid(alpha=0.25)
         ax.legend(fontsize=7)
-    fig.suptitle(f"Chosen against random groups: crowd heatmap only, {args.budget} of 72 tiles, 18 held-out videos\n"
-                 "(bars: 95% bootstrap interval over videos)", fontsize=10)
+    fig.suptitle(f"Chosen groups against random groups of the same size: crowd only, {args.budget} of 72 tiles, "
+                 "18 held-out videos\n(bars: 95% bootstrap interval over videos)", fontsize=10)
     fig.tight_layout()
     fig.savefig(path, dpi=130)
     plt.close(fig)
@@ -257,9 +265,16 @@ def main(argv=None) -> int:
     p.add_argument("--budget", type=int, default=evaluate.BUDGET)
     p.add_argument("--jobs", type=int, default=6)
     p.add_argument("--check-only", action="store_true", help="stop after the style check")
+    p.add_argument("--figure-only", action="store_true",
+                   help="redraw the figure from the saved CSVs in --out, without recomputing (the CSVs are "
+                        "rounded, so the tables are not rewritten from them)")
     args = p.parse_args(argv)
     out, cache = Path(args.out), Path(args.cache)
     out.mkdir(parents=True, exist_ok=True)
+    if args.figure_only:
+        figure(pd.read_csv(out / "chosen_vs_random.csv"), pd.read_csv(out / "chosen_vs_random_diff.csv"),
+               out / "chosen_vs_random.png", args)
+        return 0
 
     features = pd.concat([styles.video_features(cache, v) for v in data.all_videos()], ignore_index=True)
     features.round(4).to_csv(out / "style_features.csv", index=False, lineterminator="\n")

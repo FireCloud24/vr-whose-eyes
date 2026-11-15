@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 
 from scripts import chosen_vs_random
-from src import data, evaluate, metrics, parse, predict, styles
+from src import data, evaluate, metrics, parse, styles
 
 BUDGETS = (12, 24)
 THIRDS = ("calm", "middle", "active")

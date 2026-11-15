@@ -19,8 +19,8 @@ the same 16 test viewers. Style comes from the other 17 videos.
 
 Each cell is the mean difference over videos, its 95% bootstrap interval over videos, and the
 number of videos in which the arm beat random. Coverage is in percentage points, where above
-zero is better. Poor seconds are per minute, where below zero is better. At k = 32 the group is
-the whole pool, so every arm is the same and the row is left out.
+zero is better. Poor seconds are per minute, where below zero is better. When k is the whole
+pool (32), every arm picks the same viewers, so that row is left out.
 
 ### Crowd only
 
@@ -36,8 +36,6 @@ the whole pool, so every arm is the same and the row is left out.
 | 8 | typical | +0.7 (+0.4 to +1.0), 17/18 | +0.2 (-0.1 to +0.4), 15/18 | -0.2 (-0.4 to +0.0), 6/18 |
 | 16 | mixed | -0.1 (-0.1 to -0.0), 7/18 | -0.0 (-0.1 to +0.0), 6/18 | -0.0 (-0.0 to +0.0), 10/18 |
 | 16 | typical | +0.2 (+0.1 to +0.3), 17/18 | -0.0 (-0.2 to +0.1), 11/18 | -0.0 (-0.1 to +0.1), 8/18 |
-| 32 | mixed | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |
-| 32 | typical | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |
 
 ### Blend of own motion and crowd, 2 seconds ahead
 
@@ -53,8 +51,6 @@ the whole pool, so every arm is the same and the row is left out.
 | 8 | typical | +0.1 (-0.0 to +0.1), 14/18 | +0.0 (-0.2 to +0.2), 13/18 | -0.1 (-0.2 to +0.0), 6/18 |
 | 16 | mixed | -0.0 (-0.0 to +0.0), 7/18 | -0.0 (-0.1 to +0.0), 9/18 | +0.0 (-0.0 to +0.0), 11/18 |
 | 16 | typical | +0.0 (-0.0 to +0.1), 11/18 | -0.1 (-0.3 to +0.1), 11/18 | -0.1 (-0.1 to +0.0), 5/18 |
-| 32 | mixed | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |
-| 32 | typical | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |
 
 ### Blend, 5 seconds ahead
 
@@ -70,8 +66,6 @@ the whole pool, so every arm is the same and the row is left out.
 | 8 | typical | +0.2 (+0.1 to +0.3), 15/18 | -0.1 (-0.6 to +0.3), 13/18 | +0.2 (-0.2 to +0.6), 11/18 |
 | 16 | mixed | -0.0 (-0.1 to +0.0), 5/18 | +0.0 (-0.1 to +0.1), 8/18 | -0.0 (-0.1 to +0.0), 11/18 |
 | 16 | typical | +0.1 (-0.0 to +0.1), 14/18 | -0.2 (-0.5 to +0.1), 9/18 | +0.1 (-0.1 to +0.3), 9/18 |
-| 32 | mixed | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |
-| 32 | typical | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |
 
 ## Same comparison with style taken from the same experiment only (crowd only)
 
@@ -90,5 +84,3 @@ so nothing depends on viewer numbers matching across the two experiments.
 | 8 | typical | +0.8 (+0.5 to +1.2), 17/18 | +0.2 (-0.4 to +0.5), 14/18 | -0.0 (-0.2 to +0.2), 7/18 |
 | 16 | mixed | -0.2 (-0.4 to -0.1), 3/18 | +0.1 (-0.0 to +0.4), 9/18 | -0.0 (-0.1 to +0.1), 6/18 |
 | 16 | typical | +0.3 (+0.1 to +0.5), 18/18 | -0.1 (-0.4 to +0.1), 12/18 | +0.0 (-0.1 to +0.1), 9/18 |
-| 32 | mixed | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |
-| 32 | typical | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 | +0.0 (+0.0 to +0.0), 0/18 |

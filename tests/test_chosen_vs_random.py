@@ -86,3 +86,17 @@ def test_script_end_to_end(tmp_path):
                  "chosen_vs_random_same_experiment_diff.csv"):
         assert (out / name).exists()
     assert len(pd.read_csv(out / "style_features.csv")) == 18 * 12
+
+
+def test_whole_pool_rows_are_found_and_left_out_of_the_tables():
+    rows = []
+    for k, value in ((4, -0.003), (32, 0.0)):
+        for arm in ("mixed", "typical"):
+            for metric in evaluate.METRICS:
+                rows.append({"method": "crowd", "arm": arm, "k": k, "metric": metric, "difference": value,
+                             "lo": value - (0.001 if k == 4 else 0), "hi": value + (0.001 if k == 4 else 0),
+                             "videos_above_zero": 5 if k == 4 else 0, "videos": 18})
+    diff = pd.DataFrame(rows)
+    assert chosen_vs_random.whole_pool(diff) == {32}
+    table = "\n".join(chosen_vs_random.diff_table(diff, "crowd", [4, 32]))
+    assert "| 4 | mixed |" in table and "| 32 |" not in table

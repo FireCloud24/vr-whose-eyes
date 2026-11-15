@@ -187,3 +187,18 @@ README and notebook.
 - The first draft of the README was 1,243 words. I cut it to under 1,200.
 - The notebook in `notebooks/` runs the pipeline with 20 trials per video and writes
   to `results_quick/`, so it never overwrites the files the README cites.
+
+## 2026-11-15: check before sending
+
+Every README number was traced to `results/` (the checker passes) and every claim
+read against its table. Nothing in the README changed. Fixed:
+
+- `results/chosen_vs_random.md` said the k = 32 rows were left out, but printed them
+  (all zeros, because at k = 32 every arm picks the whole pool). The script now drops
+  them, found by the rule "every difference and interval is exactly zero", with a test.
+  The rows were removed from the current report to match; no other line changed.
+- `results/chosen_vs_random.png`: a panel title ran off the edge, and the k = 32
+  differences were drawn as points with no interval. Titles are shorter and those
+  points are gone. The figure was redrawn from the saved CSVs with the new
+  `--figure-only` option; the tables are not rewritten from the CSVs, which are rounded.
+- Removed unused imports flagged by the linter.
