@@ -95,3 +95,42 @@ Baselines: own motion, random crowds and a blend.
 - Speed: the first version of tile picking spent most of its time rolling arrays to
   find neighbours. A fixed 72 x 72 neighbour matrix made a trial about 2.6 times
   faster, and videos now run in parallel processes with their own seeds.
+
+Viewing styles, and chosen groups against random groups.
+
+- Three style numbers per viewer and video: head speed, exploration (entropy of
+  tiles visited) and share of the window on the 16 tiles the other viewers watch
+  most. Each is a z-score within the video. A viewer's style for a test video is
+  the average over the other videos.
+- Checked before any outcome (`results/style_check.md`): style is a stable trait.
+  Head speed correlates 0.88 between two halves of the videos, exploration 0.80,
+  time on the crowd 0.62. Across the two experiments the figures are 0.51, 0.36
+  and 0.29, which also supports the viewer numbers matching across experiments.
+  The three numbers are strongly related (head speed and exploration 0.80), so in
+  practice there is one main axis, from calm to active.
+- Three ways of picking k viewers from the pool, written down before the run:
+  random; mixed (k-means into k style clusters, one viewer nearest each centre);
+  typical (the k viewers most on the crowd), added as a control so that a gain
+  from "choosing" could be told apart from a gain from variety.
+- Result (`results/chosen_vs_random.md`): the mixed group is not better than a
+  random group of the same size. At 4 viewers it is 0.3 points lower on average
+  coverage (-0.6 to +0.0) and 0.3 lower for the worst-served 10% (-0.5 to -0.0).
+  The typical group is 1.3 points higher at 4 viewers (+0.8 to +1.9) and 2.4
+  higher at one viewer. All differences shrink to nothing by 16 viewers. With
+  the blend of own motion and crowd, every difference is under 0.6 points.
+- The same comparison with style from same-experiment videos only gives the same
+  picture (mixed -0.7 at 4 viewers, typical +1.4).
+- Two checks on why (`results/why_not_mixed.md`):
+  - Budget. I thought the mixed group might fail only because 16 tiles is about
+    one window, leaving no room to serve a second camp. At 24 tiles the mixed
+    group is still 0.2 points below random at 4 viewers.
+  - Who predicts whom. Active viewers are not predicted better by other active
+    viewers. A group of four active viewers covers 71.6% of an active viewer's
+    window, against 72.2% from four calm viewers. Own kind minus the others is
+    -0.8 points for active viewers (-1.4 to -0.2).
+- What I take from it: style here says how a person watches, not where they will
+  look. Two explorers do not explore the same place, so putting an explorer in
+  the group buys nothing for the next explorer and spends tiles away from the
+  main action.
+- Runtime: the main run took about 45 minutes on nine processes. The longest
+  video (11 minutes) sets the pace because videos run one per process.
