@@ -40,3 +40,27 @@ Set up the repo and the data, and checked that viewer IDs link across videos.
     same-experiment videos only.
 - Related work is in `docs/related_work.md`. I could read 360BroadView and CUB360
   only at abstract level, and the note says so.
+
+Parsing, tiles, field of view and heatmaps.
+
+- Every viewer is put on the video's own playback clock at 10 samples a second
+  (`src/parse.py`). Leftover rows from the previous video, backward jitter and the
+  frozen tail after the video ends are cut. A sample with no recorded row within a
+  quarter of a second is marked missing. Missing data is at most 1.3% in any video
+  (`results/data_summary.md`).
+- `src/geometry.py` turns an orientation into the share of the viewer's window in
+  each of 6 x 12 tiles. The window is 100 x 100 degrees and turns with the head,
+  tilt included. I sample it with a 20 x 20 grid of rays on the flat screen, so a
+  share means share of what is on screen.
+- Mistake caught by a test: with a 21 x 21 grid the middle ray sat exactly on a
+  tile edge whenever the viewer faced a tile corner, and rounding sent the whole
+  middle row to one side. An even grid has no middle ray.
+- Wrong guess of mine, also caught by a test: I expected the four tiles around the
+  view centre to hold most of the window. They hold about a quarter. A 100 degree
+  window touches 16 tiles even when perfectly lined up.
+- The heatmaps (`results/heatmaps/`) put the hot spot of every experiment 2 video
+  in the middle of the frame, which is where the paper says the stage or pitch is.
+  That agrees with the axis convention I took from the paper.
+- The two experiments differ a lot. In experiment 2 the 16 most-watched tiles take
+  82% of all viewing on average, against 61% in experiment 1, and heads move about
+  half as fast. So experiment 2 is the easy case for any crowd method.

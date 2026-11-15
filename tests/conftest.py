@@ -59,3 +59,36 @@ def make_dataset(root: Path, viewers=(1, 2, 3, 4), seconds=4.0, exp2_order=None,
 @pytest.fixture
 def tiny_root(tmp_path):
     return make_dataset(tmp_path / "Formated_Data")
+
+
+def make_cache(cache: Path, videos, n_viewers=12, seconds=14, hz=10, seed=0, styles=None):
+    """Write processed-video files like src/parse.py does, without raw data.
+
+    Each viewer has a fixed style across videos:
+      "still"    stares at the video's main spot
+      "follow"   tracks a spot that drifts slowly
+      "explore"  sweeps steadily round the whole frame
+    By default the first half are "still", then a quarter each of the others."""
+    from src import geometry
+
+    rng = np.random.default_rng(seed)
+    if styles is None:
+        styles = ["still"] * (n_viewers // 2) + ["follow"] * (n_viewers // 4)
+        styles += ["explore"] * (n_viewers - len(styles))
+    t = np.arange(seconds * hz) / hz
+    cache.mkdir(parents=True, exist_ok=True)
+    for video in videos:
+        spot = rng.uniform(-180, 180)
+        drift = spot + 25 * np.sin(2 * np.pi * t / seconds)
+        yaws = []
+        for style in styles:
+            if style == "still":
+                yaws.append(np.full_like(t, spot + rng.normal(0, 3)))
+            elif style == "follow":
+                yaws.append(drift + rng.normal(0, 3))
+            else:
+                yaws.append(rng.uniform(-180, 180) + rng.choice([-1, 1]) * rng.uniform(50, 70) * t)
+        q = np.stack([yaw_quaternion(y) for y in yaws])
+        np.savez_compressed(cache / f"{video}.npz", q=q, weights=geometry.tile_weights(q),
+                            viewers=np.arange(1, n_viewers + 1), hz=hz)
+    return styles
